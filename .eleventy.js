@@ -11,7 +11,7 @@ function log(message, isError) {
   }
 }
 
-async function validateHTMLFiles(buildOutput) {
+async function validateHTMLFiles(buildOutput, config) {
   const htmlFilePaths = buildOutput.results.map(r => r.outputPath)
     .filter(path => path.match(/.html$/));
 
@@ -31,7 +31,12 @@ async function validateHTMLFiles(buildOutput) {
         if (!pass) {
           everythingPassed = false;
           log(filePath + ' ❌', true);
-          log(result);
+          if(config.exitOnValidationFail){
+            throw new Error(result)
+          }
+          else {
+            log(result);
+          }
         }
       } catch (error) {
         log(error, true);
@@ -44,5 +49,8 @@ async function validateHTMLFiles(buildOutput) {
 }
 
 module.exports = function (eleventyConfig, config) {
-  eleventyConfig.on('eleventy.after', validateHTMLFiles);
+  eleventyConfig.on('eleventy.after', function(buildOutput){
+    const config = config ?? {exitOnValidationFail: false}
+    validateHTMLFiles(buildOutput, config)
+   );
 }
