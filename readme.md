@@ -2,6 +2,8 @@
 
 A simple plugin that runs on the `eleventy.after` event and validates all the HTML files that were built.
 
+This is a fork of the original with an added feature of exiting the build when html validation fails.
+
 Use:
 
 ```js
