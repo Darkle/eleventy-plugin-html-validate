@@ -15,42 +15,33 @@ async function validateHTMLFiles(buildOutput, config) {
   const htmlFilePaths = buildOutput.results.map(r => r.outputPath)
     .filter(path => path.match(/.html$/));
 
-  let everythingPassed = true;
-
-  htmlFilePaths.forEach(async (filePath, i) => {
+  for(const filePath of htmlFilePaths){
     if (fs.existsSync(filePath)) {
-      try {
-        const options = {
-          format: 'text',
-          data: fs.readFileSync(filePath, 'utf8')
-        }
+      const options = {
+        format: 'text',
+        data: fs.readFileSync(filePath, 'utf8')
+      }
 
-        const result = await htmlValidator(options)
-        const pass = result.includes("The document validates according to the specified schema(s).")
+      const result = await htmlValidator(options)
+      const pass = result.includes("The document validates according to the specified schema(s).")
 
-        if (!pass) {
-          everythingPassed = false;
-          log(filePath + ' ❌', true);
-          if(config.exitOnValidationFail){
-            throw new Error(result)
-          }
-          else {
-            log(result);
-          }
+      if (!pass) {
+        log(filePath + ' ❌', true);
+        if(config.exitOnValidationFail){
+          throw new Error(result)
         }
-      } catch (error) {
-        log(error, true);
+        else {
+          log(result);
+        }
       }
     }
-    if (htmlFilePaths.length - 1 === i && everythingPassed) {
-      log('All your HTML passed validation! 🎉');
-    }
-  });
+  }
+  log('All your HTML passed validation! 🎉');
 }
 
 module.exports = function (eleventyConfig, config) {
   eleventyConfig.on('eleventy.after', function(buildOutput){
-    const config = config ?? {exitOnValidationFail: false}
-    validateHTMLFiles(buildOutput, config)
-   );
+    const c = config ?? {exitOnValidationFail: false}
+    validateHTMLFiles(buildOutput, c).catch(err => console.error(err))
+  });
 }
