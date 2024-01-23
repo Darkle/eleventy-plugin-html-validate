@@ -17,12 +17,7 @@ async function validateHTMLFiles(buildOutput, config) {
 
   for(const filePath of htmlFilePaths){
     if (fs.existsSync(filePath)) {
-      const options = {
-        format: 'text',
-        data: fs.readFileSync(filePath, 'utf8')
-      }
-
-      const result = await htmlValidator(options)
+      const result = await htmlValidator({...config.validatorOptions, data: fs.readFileSync(filePath, 'utf8')})
       const pass = result.includes("The document validates according to the specified schema(s).")
 
       if (!pass) {
@@ -42,6 +37,12 @@ async function validateHTMLFiles(buildOutput, config) {
 module.exports = function (eleventyConfig, config) {
   eleventyConfig.on('eleventy.after', function(buildOutput){
     const c = config ?? {exitOnValidationFail: false}
+    if(!c.validatorOptions){
+      c.validatorOptions = {}
+    }
+    if(!c.validatorOptions.format){
+      c.validatorOptions.format = 'text'
+    }
     validateHTMLFiles(buildOutput, c).catch(err => {
       throw err
     })
