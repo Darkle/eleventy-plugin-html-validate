@@ -2,7 +2,7 @@
 
 A simple plugin that runs on the `eleventy.after` event and validates all the HTML files that were built.
 
-This is a fork of the original with an added feature of exiting the build when html validation fails.
+This is a fork of the [original](https://github.com/matt-auckland/eleventy-plugin-html-validate) with an added feature of exiting the build when html validation fails.
 
 You can install this version via: `npm i github:Darkle/eleventy-plugin-html-validate`
 
