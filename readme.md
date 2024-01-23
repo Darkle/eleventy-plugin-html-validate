@@ -9,9 +9,11 @@ Use:
 const eleventyHTMLValidate = require('eleventy-plugin-html-validate');
 
 module.exports = function (eleventyConfig) {
-  eleventyConfig.addPlugin(eleventyHTMLValidate);
+  eleventyConfig.addPlugin(eleventyHTMLValidate, { exitOnValidationFail: true });
 }
 ```
+
+Setting `exitOnValidationFail` to true will make your build exit on html validation failure.
 
 Warning: I have no idea which versions of Eleventy this works on, when I figure it out I'll make a note here.
 
