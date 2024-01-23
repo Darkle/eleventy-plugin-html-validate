@@ -4,6 +4,8 @@ A simple plugin that runs on the `eleventy.after` event and validates all the HT
 
 This is a fork of the original with an added feature of exiting the build when html validation fails.
 
+You can install this version via: `npm i git@github.com:Darkle/eleventy-plugin-html-validate.git`
+
 Use:
 
 ```js
