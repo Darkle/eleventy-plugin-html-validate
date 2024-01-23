@@ -42,6 +42,8 @@ async function validateHTMLFiles(buildOutput, config) {
 module.exports = function (eleventyConfig, config) {
   eleventyConfig.on('eleventy.after', function(buildOutput){
     const c = config ?? {exitOnValidationFail: false}
-    validateHTMLFiles(buildOutput, c).catch(err => console.error(err))
+    validateHTMLFiles(buildOutput, c).catch(err => {
+      throw err
+    })
   });
 }
