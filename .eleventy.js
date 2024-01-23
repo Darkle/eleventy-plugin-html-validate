@@ -18,15 +18,28 @@ async function validateHTMLFiles(buildOutput, config) {
   for(const filePath of htmlFilePaths){
     if (fs.existsSync(filePath)) {
       const result = await htmlValidator({...config.validatorOptions, data: fs.readFileSync(filePath, 'utf8')})
-      const pass = result.includes("The document validates according to the specified schema(s).")
-
-      if (!pass) {
-        log(filePath + ' ❌', true);
-        if(config.exitOnValidationFail){
-          throw new Error(result)
+      if(config.validatorOptions.validator === 'WHATWG'){
+        if(!result.isValid){
+          log(filePath + ' ❌', true);
+          if(config.exitOnValidationFail){
+            throw new Error(result.errors[0].message + '\n' + result.errors[0].ruleUrl)
+          }
+          else {
+            log(result.errors[0].message + '\n' + result.errors[0].ruleUrl);
+          }          
         }
-        else {
-          log(result);
+      }
+      else {
+        const pass = result.includes("The document validates according to the specified schema(s).")
+  
+        if (!pass) {
+          log(filePath + ' ❌', true);
+          if(config.exitOnValidationFail){
+            throw new Error(result)
+          }
+          else {
+            log(result);
+          }
         }
       }
     }
